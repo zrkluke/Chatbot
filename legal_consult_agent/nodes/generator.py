@@ -6,12 +6,12 @@ if Retrieve == Yes then
 else if Retrieve == No then
 2. LLM predicts yt given x
 '''
-
-from utils.state import LegalConsultState as State
-from utils.models import llm, reasoning_model
 from pydantic import BaseModel, Field
 from typing import Literal
 from langchain_core.messages import AIMessage
+from legal_consult_agent.utils.state import LegalConsultState as State
+from legal_consult_agent.utils.models import llm, reasoning_model
+
 
 class Response(BaseModel):
     IsRelevant: Literal["Yes", "No"] = Field(..., description="To Determine whether the text passage provides useful information to solve the question")

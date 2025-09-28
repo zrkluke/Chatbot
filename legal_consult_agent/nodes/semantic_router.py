@@ -4,8 +4,8 @@ LLM predicts Retrieve given (x, y<t)
 from typing import Literal
 from pydantic import BaseModel, Field
 from langchain_core.messages import HumanMessage
-from utils.state import LegalConsultState as State
-from utils.models import llm
+from legal_consult_agent.utils.state import LegalConsultState as State
+from legal_consult_agent.utils.models import llm
 
 
 class Response(BaseModel):

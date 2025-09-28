@@ -7,11 +7,10 @@ Return top 1 yt as final consultation answer
 else if Retrieve == No then
 Return yt as final consultation answer directly
 '''
-from ..utils.state import LegalConsultState as State
-from ..utils.models import llm
 from pydantic import BaseModel, Field
-from typing import Literal
 from langchain_core.messages import AIMessage
+from legal_consult_agent.utils.state import LegalConsultState as State
+from legal_consult_agent.utils.models import llm
 
 
 class Response(BaseModel):
