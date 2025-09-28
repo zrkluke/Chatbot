@@ -5,7 +5,7 @@
 import json
 import os
 import hashlib
-from typing import List, Dict, Any, Optional
+from typing import Any
 from langchain_core.documents import Document
 
 # 延遲導入以避免循環依賴和環境變數問題
@@ -130,7 +130,7 @@ def should_reload_data(file_path: str, vector_store, force_reload: bool = False)
     print(f"  檔案內容未更改，跳過載入")
     return False
 
-def load_json_data(file_path: str) -> List[Dict[str, Any]]:
+def load_json_data(file_path: str) -> list[dict[str, Any]]:
     """
     讀取JSON檔案並返回資料列表
     
@@ -138,7 +138,7 @@ def load_json_data(file_path: str) -> List[Dict[str, Any]]:
         file_path: JSON檔案路徑
         
     Returns:
-        List[Dict]: JSON資料列表
+        list[dict]: JSON資料列表
     """
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -152,7 +152,7 @@ def load_json_data(file_path: str) -> List[Dict[str, Any]]:
         print(f"JSON解析錯誤: {e}")
         return []
 
-def create_documents_from_data(data: List[Dict[str, Any]]) -> List[Document]:
+def create_documents_from_data(data: list[dict[str, Any]]) -> list[Document]:
     """
     將JSON資料轉換為LangChain Document格式
     
@@ -160,7 +160,7 @@ def create_documents_from_data(data: List[Dict[str, Any]]) -> List[Document]:
         data: JSON資料列表
         
     Returns:
-        List[Document]: Document物件列表
+        list[Document]: Document物件列表
     """
     documents = []
     
