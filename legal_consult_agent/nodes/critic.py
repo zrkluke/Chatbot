@@ -6,11 +6,12 @@ If Retrieve == Yes then
 else if Retrieve == No then
 2. LLM predicts IsUseful given x, yt
 '''
-from utils.models import llm
-from utils.state import LegalConsultState as State
 from pydantic import BaseModel, Field
 from typing import Literal
 from langchain_core.messages import AIMessage
+from legal_consult_agent.utils.models import llm
+from legal_consult_agent.utils.state import LegalConsultState as State
+
 
 class Response(BaseModel):
     IsSupport: Literal["Fully", "Partial", "No"] = Field(..., description="To Determine whether the text passage is fully supported by the question")
@@ -19,11 +20,11 @@ class Response(BaseModel):
 async def critic(state: State):
     question = state["question"]
     consultation_answers = state["ConsultationAnswers"]
-    documents = state["documents"]
     result_isSupport = []
     result_isUseful = []
 
     if state["Retrieve"] == "Yes":
+        documents = state["documents"]
         for i in range(len(documents)):
             prompt = f"""
             You are a helpful critic. You are given a question, a text passage and a consultation answer.

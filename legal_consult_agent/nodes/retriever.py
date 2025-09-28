@@ -3,11 +3,12 @@ Retriever
 if Retrieve == Yes then
 Retrieve relevant text passages D using R given (x, yt-1)
 '''
-from utils.tools import criminal_retriever_tool, money_debt_retriever_tool, marriage_retriever_tool
-from utils.state import LegalConsultState as State
-from utils.models import llm
 from pydantic import BaseModel, Field
 from typing import Literal
+from legal_consult_agent.utils.tools import criminal_retriever, money_debt_retriever, marriage_retriever
+from legal_consult_agent.utils.state import LegalConsultState as State
+from legal_consult_agent.utils.models import llm
+
 
 class Response(BaseModel):
     LegalTopic: Literal["Criminal", "Marriage", "MoneyDebt"] = Field(..., description="The most relevant legal topic of the question")
@@ -32,10 +33,10 @@ async def retriever(state: State):
     res: Response = await llm.with_structured_output(Response).ainvoke(prompt)
     
     if res.LegalTopic == "Criminal":
-        documents = await criminal_retriever_tool.ainvoke(res.Query)
+        documents = criminal_retriever.invoke(res.Query)
     elif res.LegalTopic == "Marriage":
-        documents = await marriage_retriever_tool.ainvoke(res.Query)
+        documents = marriage_retriever.invoke(res.Query)
     elif res.LegalTopic == "MoneyDebt":
-        documents = await money_debt_retriever_tool.ainvoke(res.Query)
+        documents = money_debt_retriever.invoke(res.Query)
 
     return {"documents": documents}
