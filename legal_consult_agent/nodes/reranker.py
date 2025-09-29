@@ -96,7 +96,7 @@ def filter_and_rank_answers(consultation_answers: list[str],
             "is_support": is_support,
             "is_useful": is_useful,
             "relevant_score": 1.0 if is_relevant == "Yes" else 0.0,
-            "support_score": {"Fully": 1.0, "Partial": 0.6, "No": 0.0}.get(is_support, 0.0),
+            "support_score": {"Fully": 1.0, "Partial": 0.5, "No": 0.0}.get(is_support, 0.0),
             "useful_score": {"5": 1.0, "4": 0.8, "3": 0.6, "2": 0.4, "1": 0.2}.get(is_useful, 0.0)
         }
         
