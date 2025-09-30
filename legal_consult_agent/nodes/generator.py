@@ -14,13 +14,17 @@ from legal_consult_agent.utils.models import llm, reasoning_model
 
 
 class Response(BaseModel):
-    IsRelevant: Literal["Yes", "No"] = Field(..., description="To Determine whether the text passage provides useful information to solve the question")
+    IsRelevant: Literal["Yes", "No"] = Field(
+        ..., description="To Determine whether the text passage provides useful information to solve the question"
+    )
+
 
 async def generator(state: State):
     messages = state["messages"]
     question = state["question"]
-    result_isRelevant = []
-    result_yt = []
+    # Collect answers and relevance judgements as lists for LegalConsultState.
+    result_isRelevant: list[str] = []
+    result_yt: list[str] = []
 
     if state["Retrieve"] == "Yes":
         # Predict x, d is relevant for each d in D
@@ -40,7 +44,7 @@ async def generator(state: State):
             You are a legal consultant. You are very knowledgeable in the marriage, law, criminal law, and money debt law.
             You are given a question, a text passage and a chat history.
             Think Deeply and Generate the answer to the question based on the text passage and chat history.
-            
+
             User's Question: {question}
             Text Passage: {d.page_content}
             Chat History: {messages}
@@ -48,7 +52,7 @@ async def generator(state: State):
             """
             res: AIMessage = await reasoning_model.ainvoke(predict_yt_prompt)
             result_yt.append(res.content)
-        
+
         return {"IsRelevant": result_isRelevant, "ConsultationAnswers": result_yt}
     else:
         # Predict yt given x
@@ -62,3 +66,4 @@ async def generator(state: State):
         result_yt.append(res.content)
 
         return {"ConsultationAnswers": result_yt}
+
