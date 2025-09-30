@@ -61,46 +61,17 @@ async def health_check():
 async def chat(request: ChatRequest):
     """
     法律諮詢聊天端點
-    
+
     Args:
         request: 包含問題和可選的thread_id、user_id
-        
+
     Returns:
         ChatResponse: 包含回答和相關資訊
     """
-    start_time = time.time()
-    
+
     try:
-        # 生成thread_id如果沒有提供
-        thread_id = request.thread_id or str(uuid.uuid4())
-        
-        # 準備配置
-        config = {"configurable": {"thread_id": thread_id}}
-        
-        # 調用agent graph
-        result = await graph.ainvoke(
-            input={"question": request.question},
-            config=config,
-        )
-        
-        # 提取回答
-        if result and "messages" in result and result["messages"]:
-            answer = result["messages"][-1].content
-        else:
-            answer = "抱歉，我無法處理您的問題。"
-        
-        processing_time = time.time() - start_time
-        
-        return ChatResponse(
-            answer=answer,
-            thread_id=thread_id,
-            user_id=request.user_id,
-            processing_time=round(processing_time, 2),
-            status="success"
-        )
-        
+        return await _run_chat(request)
     except Exception as e:
-        processing_time = time.time() - start_time
         raise HTTPException(
             status_code=500,
             detail=f"處理請求時發生錯誤: {str(e)}"
@@ -154,25 +125,25 @@ async def chat_batch(requests: List[ChatRequest]):
             detail=f"批量處理請求時發生錯誤: {str(e)}"
         )
 
-async def process_single_chat(request: ChatRequest) -> ChatResponse:
-    """處理單個聊天請求的輔助函數"""
+async def _run_chat(request: ChatRequest) -> ChatResponse:
+    """執行聊天流程並返回回應。"""
     start_time = time.time()
-    
+
     thread_id = request.thread_id or str(uuid.uuid4())
     config = {"configurable": {"thread_id": thread_id}}
-    
+
     result = await graph.ainvoke(
         input={"question": request.question},
         config=config,
     )
-    
+
     if result and "messages" in result and result["messages"]:
         answer = result["messages"][-1].content
     else:
         answer = "抱歉，我無法處理您的問題。"
-    
+
     processing_time = time.time() - start_time
-    
+
     return ChatResponse(
         answer=answer,
         thread_id=thread_id,
@@ -180,6 +151,11 @@ async def process_single_chat(request: ChatRequest) -> ChatResponse:
         processing_time=round(processing_time, 2),
         status="success"
     )
+
+
+async def process_single_chat(request: ChatRequest) -> ChatResponse:
+    """處理單個聊天請求的輔助函數"""
+    return await _run_chat(request)
 
 # 獲取對話歷史端點
 @app.get("/chat/history/{thread_id}")
