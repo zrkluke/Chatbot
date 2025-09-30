@@ -52,7 +52,7 @@
 ## 📁 專案結構
 
 ```
-ChatBot/
+Chatbot/
 ├── legal_consult_agent/          # 核心代理模組
 │   ├── __init__.py
 │   ├── agent.py                  # LangGraph 工作流程定義
@@ -129,7 +129,7 @@ ChatBot/
 1. **Clone 專案**
 ```bash
 git clone https://github.com/zrkluke/Chatbot.git
-cd ChatBot
+cd Chatbot
 ```
 
 2. **建置環境**
